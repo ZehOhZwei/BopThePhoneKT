@@ -10,7 +10,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
-    fun gameClick(view: View) {
+    fun singleplayerClick(view: View) {
+        val showGameView: Intent = Intent(this, GameActivity::class.java)
+        startActivity(showGameView)
+    }
+
+    fun multiplayerClick(view: View) {
         val showGameView: Intent = Intent(this, LobbyActivity::class.java)
         startActivity(showGameView)
     }
