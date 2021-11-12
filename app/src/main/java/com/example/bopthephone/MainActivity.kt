@@ -67,10 +67,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun testClick(view: View) {
-        runBlocking {
+
             socketService.sendMessage("abc")
-        }
-    }
 
     }
+
 }

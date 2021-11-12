@@ -44,8 +44,10 @@ class SocketService : Service() {
         binders.remove(callback)
     }
 
-    suspend fun sendMessage(message: String) {
+    fun sendMessage(message: String) {
+        socketScope.launch(){
         messageChannel.send(message)
+        }
     }
 
     private fun notify(
@@ -68,14 +70,17 @@ class SocketService : Service() {
         socketScope.launch {
             client.webSocket(
                 method = HttpMethod.Get,
-                host = "192.168.2.101",
-                port = 4666,
-                path = "/bop"
+                host = "192.168.178.31",
+                port = 8080,
+                path = "/chat"
             ) {
                 session = this
 
                 var output = launch(Dispatchers.IO) { outputMessages() }
                 var input = launch(Dispatchers.IO) { inputMessages() }
+
+                output.join()
+                input.cancelAndJoin()
                 sendMessage("a")
                 sendMessage("b")
             }
