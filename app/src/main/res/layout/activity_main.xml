@@ -4,71 +4,79 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/cardview_dark_background">
 
     <ImageView
         android:id="@+id/logoView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="218dp"
+        android:layout_marginBottom="160dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/btp_logo" />
 
     <ImageButton
         android:id="@+id/singleplayer"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginStart="60dp"
-        android:background="@drawable/gamebutton"
+        android:layout_marginStart="64dp"
         android:onClick="singleplayerClick"
+        android:background="@drawable/gamebutton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/multiplayer"
+        app:layout_constraintHorizontal_bias="0.352"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5"
-        app:srcCompat="@drawable/ic_baseline_play_circle_outline_80"
-        />
+        app:layout_constraintVertical_bias="0.711"
+        app:srcCompat="@drawable/ic_baseline_play_circle_outline_80" />
 
     <ImageButton
         android:id="@+id/multiplayer"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginEnd="60dp"
-        android:background="@drawable/gamebutton"
+        android:layout_marginEnd="64dp"
         android:onClick="multiplayerClick"
+        android:background="@drawable/gamebutton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_bias="0.711"
         app:srcCompat="@drawable/ic_baseline_people_outline_80" />
 
     <Button
-        android:id="@+id/settings"
+        android:id="@+id/scoreboard"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="252dp"
+        android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
-        android:background="#009688"
-        android:text="Einstellungen"
+        android:background="@android:color/holo_orange_dark"
+        android:onClick="scoreboardClick"
+        android:text="Scoreboard"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/test"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/test"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="151dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="#009688"
+        android:background="@android:color/holo_orange_dark"
         android:onClick="testClick"
         android:text="Test"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/scoreboard" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
