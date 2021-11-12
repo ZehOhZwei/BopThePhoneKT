@@ -15,6 +15,10 @@
             android:name=".PopUpActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ScoreboardActivity"
+            android:exported="false" />
+
         <service
             android:name=".SocketService"
             android:enabled="true"
@@ -30,7 +34,7 @@
             android:theme="@style/Theme.BopThePhone.NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

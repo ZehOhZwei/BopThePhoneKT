@@ -61,10 +61,16 @@ class MainActivity : AppCompatActivity() {
         //startActivity(showGameView)
     }
 
+    fun scoreboardClick(view: View) {
+        val showScoreboardView: Intent = Intent(this, ScoreboardActivity::class.java)
+        startActivity(showScoreboardView)
+    }
+
     fun testClick(view: View) {
         runBlocking {
             socketService.sendMessage("abc")
         }
     }
 
+    }
 }
