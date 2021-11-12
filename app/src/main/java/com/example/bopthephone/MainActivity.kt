@@ -22,6 +22,11 @@ class MainActivity : AppCompatActivity() {
         startActivity(showGameView)
     }
 
+    fun scoreboardClick(view: View) {
+        val showScoreboardView: Intent = Intent(this, ScoreboardActivity::class.java)
+        startActivity(showScoreboardView)
+    }
+
     fun testClick(view: View) {
 
         val tapItPlayer : MediaPlayer =  MediaPlayer.create(this, R.raw.tap_it)
