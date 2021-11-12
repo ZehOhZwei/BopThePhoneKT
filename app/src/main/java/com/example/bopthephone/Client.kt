@@ -14,15 +14,15 @@ class Client {
             install(WebSockets)
         }
         runBlocking {
-            client.webSocket(method = HttpMethod.Get, host = "127.0.0.1", port = 8080, path = "/chat") {
-                //val messageOutputRoutine = launch { outputMessages() }
-                //val userInputRoutine = launch { inputMessages() }
+            client.webSocket(method = HttpMethod.Get, host = "192.168.178.31", port = 8080, path = "/chat") {
+                val messageOutputRoutine = launch { outputMessages() }
+                val userInputRoutine = launch { inputMessages() }
 
-                //userInputRoutine.join() // Wait for completion; either "exit" or error
-                //messageOutputRoutine.cancelAndJoin()
+                userInputRoutine.join() // Wait for completion; either "exit" or error
+                messageOutputRoutine.cancelAndJoin()
             }
         }
-        //client.close()
+        client.close()
         println("Connection closed. Goodbye!")
     }
 }
@@ -39,7 +39,7 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
 }
 
 suspend fun DefaultClientWebSocketSession.inputMessages() {
-    while (true) {
+    while (readLine() != "") {
         val message = readLine() ?: ""
         if (message.equals("exit", true)) return
         try {
