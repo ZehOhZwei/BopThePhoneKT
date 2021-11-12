@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
     fun gameClick(view: View) {
-        val showGameView: Intent = Intent(this, GameActivity::class.java)
+        val showGameView: Intent = Intent(this, LobbyActivity::class.java)
         startActivity(showGameView)
     }
 }
