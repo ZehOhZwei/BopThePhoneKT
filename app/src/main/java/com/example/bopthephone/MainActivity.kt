@@ -8,13 +8,14 @@ import android.os.Bundle
 import android.os.IBinder
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
-    
+
     private lateinit var socketService: SocketService
     private var bound: Boolean = false
 
-    private val mConnection = object : ServiceConnection{
+    private val mConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             println("super123")
             val binder = service as SocketService.SocketBinder
@@ -41,15 +42,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onPause(){
+    override fun onPause() {
         super.onPause()
         unbindService(mConnection)
         bound = false
 
     }
 
-    fun gameClick(view: View) {
+    fun singleplayerClick(view: View) {
         val showGameView: Intent = Intent(this, GameActivity::class.java)
         startActivity(showGameView)
     }
+
+    fun multiplayerClick(view: View) {
+        val intent = Intent(this, PopUpActivity::class.java)
+        startActivity(intent)
+        //val showGameView: Intent = Intent(this, LobbyActivity()::class.java)
+        //startActivity(showGameView)
+    }
+
+    fun testClick(view: View) {
+        runBlocking {
+            socketService.sendMessage("abc")
+        }
+    }
+
 }

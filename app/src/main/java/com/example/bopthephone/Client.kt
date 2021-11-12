@@ -39,7 +39,7 @@ class Client(val target: String, val port: Int) {
 
     }
 
-    suspend fun open() {
+    suspend fun listen() {
         client.webSocket(
             method = HttpMethod.Get,
             host = "192.168.2.101",
@@ -47,8 +47,9 @@ class Client(val target: String, val port: Int) {
             path = "/bop"
         ) {
             connected = true
-            val input = launch { inputMessages() }
-            val output = launch { outputMessages() }
+            var output = launch { outputMessages() }
+            var input = launch { inputMessages() }
+
             input.join()
             output.cancelAndJoin()
         }
@@ -58,8 +59,7 @@ class Client(val target: String, val port: Int) {
 
 
     private suspend fun DefaultClientWebSocketSession.inputMessages() {
-        while (true) {
-            val message = messageChannel.receive()
+        for (message in messageChannel) {
             if (message.equals("disconnect", true)) return
             try {
                 send(message)

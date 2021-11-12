@@ -9,13 +9,13 @@ import android.os.Looper
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.websocket.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
-import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.*
 
 class SocketService : Service() {
@@ -23,8 +23,12 @@ class SocketService : Service() {
     private val binders: MutableSet<SocketCallback<String>> = mutableSetOf()
     private val messageChannel = Channel<String>(UNLIMITED)
     private val mainThreadHandler: Handler = Handler.createAsync(Looper.getMainLooper())
+    private val job = SupervisorJob()
+    private val socketScope = CoroutineScope(Dispatchers.IO)
 
     private var connected: Boolean = false
+
+    lateinit var session: DefaultClientWebSocketSession
 
     private val client = HttpClient(OkHttp) {
         install(WebSockets)
@@ -61,30 +65,27 @@ class SocketService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         println("onstartcommand")
-        runBlocking {
+        socketScope.launch {
             client.webSocket(
                 method = HttpMethod.Get,
                 host = "192.168.2.101",
                 port = 4666,
                 path = "/bop"
             ) {
-                connected = true
-                val input = launch { inputMessages() }
-                val output = launch { outputMessages() }
-                input.join()
-                output.cancelAndJoin()
-            }
-            connected = false
-            client.close()
-        }
+                session = this
 
+                var output = launch(Dispatchers.IO) { outputMessages() }
+                var input = launch(Dispatchers.IO) { inputMessages() }
+                sendMessage("a")
+                sendMessage("b")
+            }
+        }
         return START_STICKY
     }
 
     private suspend fun DefaultClientWebSocketSession.inputMessages() {
-        while (true) {
-            val message = messageChannel.receive()
-            if (message.equals("disconnect", true)) return
+        for (message in messageChannel) {
+            println("sending: $message")
             try {
                 send(message)
             } catch (e: Exception) {
