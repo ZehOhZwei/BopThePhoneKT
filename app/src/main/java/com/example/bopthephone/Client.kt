@@ -39,14 +39,19 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
 }
 
 suspend fun DefaultClientWebSocketSession.inputMessages() {
-    while (readLine() != "") {
-        val message = readLine() ?: ""
-        if (message.equals("exit", true)) return
-        try {
-            send(message)
-        } catch (e: Exception) {
-            println("Error while sending: " + e.localizedMessage)
-            return
+    while (true) {
+        if(true){
+            val message = readLine() ?: ""
+            if (message.equals("exit", true)) return
+            try {
+
+                send(message)
+            } catch (e: Exception) {
+                println("Error while sending: " + e.localizedMessage)
+                return
+            }
         }
     }
 }
+
+
