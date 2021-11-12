@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.bopthephone" >
+    package="com.example.bopthephone">
 
     <application
         android:allowBackup="true"
@@ -9,11 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BopThePhone">
-        android:theme="@style/Theme.BopThePhone">
+        <activity
+            android:name=".PopUpActivity"
+            android:exported="false" />
+
         <service
             android:name=".SocketService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".LobbyActivity"
@@ -25,7 +28,7 @@
             android:theme="@style/Theme.BopThePhone.NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
