@@ -44,8 +44,10 @@ class SocketService : Service() {
         binders.remove(callback)
     }
 
-    suspend fun sendMessage(message: String) {
-        messageChannel.send(message)
+    fun sendMessage(message: String) {
+        socketScope.launch {
+            messageChannel.send(message)
+        }
     }
 
     private fun notify(
@@ -76,8 +78,6 @@ class SocketService : Service() {
 
                 var output = launch(Dispatchers.IO) { outputMessages() }
                 var input = launch(Dispatchers.IO) { inputMessages() }
-                sendMessage("a")
-                sendMessage("b")
             }
         }
         return START_STICKY
