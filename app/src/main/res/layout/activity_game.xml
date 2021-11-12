@@ -6,4 +6,92 @@
     android:layout_height="match_parent"
     tools:context=".GameActivity">
 
+    <Button
+        android:id="@+id/StartGameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="startGameClick"
+        android:text="Start Game"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.483" />
+
+    <Button
+        android:id="@+id/TwistItButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="twistItClick"
+        android:text="twist It"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/TapItButton"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="458dp" />
+
+    <Button
+        android:id="@+id/PullItButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="pullItClick"
+        android:text="Pull it"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/TapItButton"
+        tools:layout_editor_absoluteY="458dp" />
+
+    <Button
+        android:id="@+id/TapItButton"
+        android:layout_width="199dp"
+        android:layout_height="120dp"
+        android:onClick="tapItClick"
+        android:text="Tap It"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.693" />
+
+    <TextView
+        android:id="@+id/TaskText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTint="@color/black"
+        android:scaleX="5"
+        android:scaleY="5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:layout_constraintVertical_bias="0.134" />
+
+    <TextView
+        android:id="@+id/ScoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TaskText"
+        app:layout_constraintVertical_bias="0.193" />
+
+    <ProgressBar
+        android:id="@+id/CountDownBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:max="3000"
+        android:minWidth="300dp"
+        android:progress="3000"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/StartGameButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
