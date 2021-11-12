@@ -3,11 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Projekte/BopThePhone2/app/src/main/res/drawable/gamebutton.xml" value="0.5703125" />
-        <entry key="..\:/Projekte/BopThePhone2/app/src/main/res/drawable/ic_baseline_people_outline_80.xml" value="0.5703125" />
-        <entry key="..\:/Projekte/BopThePhone2/app/src/main/res/drawable/ic_baseline_play_circle_outline_80.xml" value="0.5703125" />
-        <entry key="..\:/Projekte/BopThePhone2/app/src/main/res/layout/activity_game.xml" value="0.5541666666666667" />
-        <entry key="..\:/Projekte/BopThePhone2/app/src/main/res/layout/activity_main.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/oleva/AndroidStudioProjects/bopthephonekt/app/src/main/res/layout/activity_game.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/oleva/AndroidStudioProjects/bopthephonekt/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>
