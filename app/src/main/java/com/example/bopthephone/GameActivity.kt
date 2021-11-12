@@ -37,11 +37,11 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     private val pull = "Pull It!"
 
     private lateinit var currentTask: String
-    private var cont : Boolean = false
-    private var score : Int = 0
-    private var countdown : Long = 3000
+    private var cont: Boolean = false
+    private var score: Int = 0
+    private var countdown: Long = 3000
     private var countdownBarValue: Long = 0
-    private val interval : Int = 100
+    private val interval: Int = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,9 +128,9 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     }
 
 
-    override fun onSensorChanged(event: SensorEvent){
-        when (event.sensor?.type){
-            Sensor.TYPE_ACCELEROMETER ->{
+    override fun onSensorChanged(event: SensorEvent) {
+        when (event.sensor?.type) {
+            Sensor.TYPE_ACCELEROMETER -> {
                 if (event.values[1] - 9.81f >= accelThreshold) {
                     if (currentTask === pull) {
                         cont = true
@@ -139,8 +139,8 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
             }
         }
 
-        when (event.sensor?.type){
-            Sensor.TYPE_GYROSCOPE ->{
+        when (event.sensor?.type) {
+            Sensor.TYPE_GYROSCOPE -> {
                 if (event.values[1] >= gyroThreshold) {
                     if (currentTask === twist) {
                         cont = true
@@ -154,7 +154,7 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     }
 
     fun chooseNextTask(task: Int): String {
-        return when(task){
+        return when (task) {
             0 -> tap
             1 -> twist
             2 -> pull
