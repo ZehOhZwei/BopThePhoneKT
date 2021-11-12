@@ -10,6 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BopThePhone">
         android:theme="@style/Theme.BopThePhone">
+
         <service
             android:name=".SocketService"
             android:enabled="true"
@@ -33,5 +34,6 @@
             </intent-filter>
         </activity>
     </application>
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>

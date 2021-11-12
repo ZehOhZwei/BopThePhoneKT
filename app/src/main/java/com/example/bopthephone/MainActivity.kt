@@ -7,9 +7,13 @@ import android.view.VerifiedInputEvent
 import android.view.View
 
 class MainActivity : AppCompatActivity() {
+
+    public lateinit var client: Client
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        client = Client()
     }
     fun singleplayerClick(view: View) {
         val showGameView: Intent = Intent(this, GameActivity::class.java)
@@ -22,6 +26,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun testClick(view: View) {
-
+        client.main()
     }
 }
