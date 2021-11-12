@@ -6,13 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/logoView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="218dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/logo" />
+
     <ImageButton
         android:id="@+id/singleplayer"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginStart="60dp"
         android:background="@drawable/gamebutton"
-        android:onClick="gameClick"
+        android:onClick="singleplayerClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/multiplayer"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,12 +38,12 @@
         android:layout_height="120dp"
         android:layout_marginEnd="60dp"
         android:background="@drawable/gamebutton"
+        android:onClick="multiplayerClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
-        app:srcCompat="@drawable/ic_baseline_people_outline_80"
-        />
+        app:srcCompat="@drawable/ic_baseline_people_outline_80" />
 
     <Button
         android:id="@+id/settings"
@@ -54,9 +65,10 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="#009688"
-        android:text="Test"
         android:onClick="testClick"
+        android:text="Test"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
