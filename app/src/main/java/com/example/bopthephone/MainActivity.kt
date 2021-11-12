@@ -3,6 +3,7 @@ package com.example.bopthephone
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.VerifiedInputEvent
 import android.view.View
 
 class MainActivity : AppCompatActivity() {
@@ -18,5 +19,9 @@ class MainActivity : AppCompatActivity() {
     fun multiplayerClick(view: View) {
         val showGameView: Intent = Intent(this, LobbyActivity::class.java)
         startActivity(showGameView)
+    }
+
+    fun testClick(view: View) {
+
     }
 }
