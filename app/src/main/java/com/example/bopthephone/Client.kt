@@ -1,11 +1,5 @@
 package com.example.bopthephone
 
-import android.app.Service
-import android.content.Intent
-import android.os.Binder
-import android.os.Handler
-import android.os.IBinder
-import android.os.Looper
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.websocket.*
@@ -13,24 +7,18 @@ import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import java.util.*
 
-class SocketService : Service() {
+class Client(val target: String, val port: Int) {
 
     private val binders: MutableSet<SocketCallback<String>> = mutableSetOf()
-    private val messageChannel = Channel<String>(UNLIMITED)
-    private val mainThreadHandler: Handler = Handler.createAsync(Looper.getMainLooper())
+    private val messageChannel = Channel<String>(Channel.UNLIMITED)
 
     private var connected: Boolean = false
 
     private val client = HttpClient(OkHttp) {
         install(WebSockets)
     }
-
-    private val binder = SocketBinder()
 
     fun registerCallback(callback: SocketCallback<String>) {
         binders.add(callback)
@@ -51,35 +39,23 @@ class SocketService : Service() {
 
     }
 
-    override fun onBind(intent: Intent): IBinder {
-        return binder
-    }
-
-    override fun onUnbind(intent: Intent?): Boolean {
-        return super.onUnbind(intent)
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        println("onstartcommand")
-        runBlocking {
-            client.webSocket(
-                method = HttpMethod.Get,
-                host = "192.168.2.101",
-                port = 4666,
-                path = "/bop"
-            ) {
-                connected = true
-                val input = launch { inputMessages() }
-                val output = launch { outputMessages() }
-                input.join()
-                output.cancelAndJoin()
-            }
-            connected = false
-            client.close()
+    suspend fun open() {
+        client.webSocket(
+            method = HttpMethod.Get,
+            host = "192.168.2.101",
+            port = 4666,
+            path = "/bop"
+        ) {
+            connected = true
+            val input = launch { inputMessages() }
+            val output = launch { outputMessages() }
+            input.join()
+            output.cancelAndJoin()
         }
-
-        return START_STICKY
+        connected = false
+        client.close()
     }
+
 
     private suspend fun DefaultClientWebSocketSession.inputMessages() {
         while (true) {
@@ -105,9 +81,5 @@ class SocketService : Service() {
         } catch (e: Exception) {
             println("Error while receiving: " + e.localizedMessage)
         }
-    }
-
-    inner class SocketBinder : Binder() {
-        fun getService(): SocketService = this@SocketService
     }
 }

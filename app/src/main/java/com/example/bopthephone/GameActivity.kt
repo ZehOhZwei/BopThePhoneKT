@@ -1,16 +1,20 @@
 package com.example.bopthephone
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.IBinder
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
 import android.os.CountDownTimer as CountDownTimer1
 
@@ -42,6 +46,31 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     private var countdown : Long = 3000
     private var countdownBarValue: Long = 0
     private val interval : Int = 100
+
+
+    private lateinit var socketService: SocketService
+    private var bound: Boolean = false
+
+    private val mConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            println("super123")
+            val binder = service as SocketService.SocketBinder
+            socketService = binder.getService()
+            bound = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            println("nichtsuper123")
+            bound = false
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Intent(this, SocketService::class.java).also { intent ->
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
