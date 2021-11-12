@@ -26,7 +26,7 @@ class LobbyActivity : AppCompatActivity() {
             ready = !ready
         }
         else{
-            readyButton.setBackgroundColor(Color.BLUE)
+            readyButton.setBackgroundColor(Color.GREEN)
             readyButton.text = "Ready"
             ready = !ready
         }

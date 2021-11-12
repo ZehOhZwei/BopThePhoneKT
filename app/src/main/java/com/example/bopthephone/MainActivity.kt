@@ -1,6 +1,7 @@
 package com.example.bopthephone
 
 import android.content.Intent
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.VerifiedInputEvent
@@ -22,6 +23,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun testClick(view: View) {
+
+        val tapItPlayer : MediaPlayer =  MediaPlayer.create(this, R.raw.tap_it)
+        tapItPlayer.start()
 
     }
 }
