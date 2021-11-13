@@ -22,7 +22,7 @@ import java.util.*
 
 class SocketService : Service() {
 
-    private val binders: MutableSet<SocketCallback<Message>> = mutableSetOf()
+    private val binders: MutableSet<SocketCallback> = mutableSetOf()
     private val messageChannel = Channel<String>(UNLIMITED)
     private val mainThreadHandler: Handler = Handler.createAsync(Looper.getMainLooper())
     private val job = SupervisorJob()
@@ -38,11 +38,11 @@ class SocketService : Service() {
 
     private val binder = SocketBinder()
 
-    fun registerCallback(callback: SocketCallback<Message>) {
+    fun registerCallback(callback: SocketCallback) {
         binders.add(callback)
     }
 
-    fun deregisterCallback(callback: SocketCallback<Message>) {
+    fun deregisterCallback(callback: SocketCallback) {
         binders.remove(callback)
     }
 
@@ -53,7 +53,7 @@ class SocketService : Service() {
     }
 
     private fun notify(
-        response: CallbackResponse<Message>,
+        response: CallbackResponse,
     ) {
         binders.forEach { it.onComplete(response) }
 

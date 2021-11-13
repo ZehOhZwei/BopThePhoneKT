@@ -110,7 +110,7 @@ class MultiplayerActivity : AppCompatActivity() , SensorEventListener{
         lobbyCode = intent.getStringExtra("LobbyCode")!!
     }
 
-    fun onMessage(response: CallbackResponse<Message<String>>){
+    fun onMessage(response: CallbackResponse){
         when(response.data.type){
             "last-person"-> lastPerson = true
 

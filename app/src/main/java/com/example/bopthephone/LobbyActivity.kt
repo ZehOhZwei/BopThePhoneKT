@@ -38,11 +38,7 @@ class LobbyActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
-        socketService.registerCallback(object : SocketCallback<Message> {
-            override fun onComplete(response: CallbackResponse<Message>) {
-
-            }
-        })
+        socketService.registerCallback(this::onMessage)
     }
 
     override fun onPause() {
@@ -58,7 +54,7 @@ class LobbyActivity : AppCompatActivity() {
         lobbyCode = intent.getStringExtra("LobbyCode")!!
     }
 
-    fun onMessage(response: CallbackResponse<Message>){
+    fun onMessage(response: CallbackResponse){
         when(response.data.type){
             "start-game"->startGame()
         }

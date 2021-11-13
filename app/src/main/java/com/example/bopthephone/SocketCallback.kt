@@ -1,7 +1,7 @@
 package com.example.bopthephone
 
-interface SocketCallback<T> {
-    fun onComplete(response: CallbackResponse<T>)
+fun interface SocketCallback {
+    fun onComplete(response: CallbackResponse)
 }
 
-data class CallbackResponse<T> (val data: T)
+data class CallbackResponse (val data: Message)
