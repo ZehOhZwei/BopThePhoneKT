@@ -50,39 +50,19 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     private val interval : Int = 100
 
 
-    private lateinit var socketService: SocketService
-    private var bound: Boolean = false
-
-    private val mConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            println("super123")
-            val binder = service as SocketService.SocketBinder
-            socketService = binder.getService()
-            bound = true
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-            println("nichtsuper123")
-            bound = false
-        }
-    }
-
     override fun onResume() {
         super.onResume()
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
 
     }
 
     override fun onPause() {
         super.onPause()
-        unbindService(mConnection)
     }
 
 
     override fun onStart() {
         super.onStart()
         Intent(this, SocketService::class.java).also { intent ->
-            bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
         }
     }
 
@@ -91,8 +71,10 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
         setContentView(R.layout.activity_game)
 
         this.sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.let { this.accelerometer = it }
-        sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)?.let { this.gyroscope = it }
+        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI)}
+            sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)?.also { gyroscope ->
+                sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI)}
 
         scoreText = findViewById<TextView>(R.id.ScoreText)
         taskText = findViewById<TextView>(R.id.TaskText)
@@ -112,8 +94,10 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
 
         startGameButton.visibility = View.INVISIBLE
         tapItButton.visibility = View.VISIBLE
-        twistItButton.visibility = View.VISIBLE
-        pullItButton.visibility = View.VISIBLE
+        if(false){
+            twistItButton.visibility = View.VISIBLE
+            pullItButton.visibility = View.VISIBLE
+        }
         countDownBar.visibility = View.VISIBLE
         countdownBarValue = countdown
         score = 0
@@ -133,9 +117,9 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
                     cont = false
                     score++
                     currentTask = chooseNextTask(Random.nextInt(until = 3))
-                    countdownBarValue = countdown - countdown / 100
+                    countdownBarValue = countdown - countdown / 50
                     countDownBar.max = countdownBarValue.toInt()
-                    gameRound(countdown - countdown / 100)
+                    gameRound(countdown - countdown / 50)
                     cancel()
                 }
             }
@@ -174,6 +158,7 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent){
         when (event.sensor?.type){
             Sensor.TYPE_ACCELEROMETER ->{
+
                 if (event.values[1] - 9.81f >= accelThreshold) {
                     if (currentTask === pull) {
                         cont = true

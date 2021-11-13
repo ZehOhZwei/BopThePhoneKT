@@ -12,46 +12,20 @@ import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var socketService: SocketService
-    private var bound: Boolean = false
 
-    private val mConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            println("super123")
-            val binder = service as SocketService.SocketBinder
-            socketService = binder.getService()
-            bound = true
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-            println("nichtsuper123")
-            bound = false
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
 
-    override fun onStart() {
-        super.onStart()
-        Intent(this, SocketService::class.java).also { intent ->
-            startService(intent)
-            bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
-        }
-    }
-
     override fun onPause() {
         super.onPause()
-        unbindService(mConnection)
-        bound = false
 
     }
 
     override fun onResume() {
         super.onResume()
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
     }
 
     fun singleplayerClick(view: View) {
@@ -70,7 +44,6 @@ class MainActivity : AppCompatActivity() {
         val showScoreboardView: Intent = Intent(this, ScoreboardActivity::class.java)
         startActivity(showScoreboardView)
 
-        socketService.sendMessage("Request Scores")
     }
 
     fun testClick(view: View) {

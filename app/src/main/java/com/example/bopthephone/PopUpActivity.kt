@@ -1,15 +1,21 @@
 package com.example.bopthephone
 
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.view.View
 import android.widget.EditText
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class PopUpActivity : AppCompatActivity() {
 
     private lateinit var lobbyCodeEditText: EditText
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,8 +29,9 @@ class PopUpActivity : AppCompatActivity() {
         val toLobbyActivity: Intent = Intent(this, LobbyActivity()::class.java)
         val b: Bundle = Bundle()
         b.putString("LobbyCode", lobbyCodeEditText.text.toString())
-        if(b != null){
+        if (b != null) {
             toLobbyActivity.putExtras(b)
+                lobbyCodeEditText.text.toString()
             startActivity(toLobbyActivity)
         }
     }

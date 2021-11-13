@@ -10,6 +10,8 @@ import android.os.IBinder
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class LobbyActivity : AppCompatActivity() {
 
@@ -17,34 +19,6 @@ class LobbyActivity : AppCompatActivity() {
     private var players : Int = 0
     private lateinit var readyButton: Button
     private lateinit var lobbyCode: String
-
-    private lateinit var socketService: SocketService
-    private var bound: Boolean = false
-
-    private val mConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            println("super123")
-            val binder = service as SocketService.SocketBinder
-            socketService = binder.getService()
-            bound = true
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-            println("nichtsuper123")
-            bound = false
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
-        socketService.registerCallback(this::onMessage)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        unbindService(mConnection)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,9 +28,11 @@ class LobbyActivity : AppCompatActivity() {
         lobbyCode = intent.getStringExtra("LobbyCode")!!
     }
 
-    fun onMessage(response: CallbackResponse){
+    private fun onMessage(response: CallbackResponse){
         when(response.data.type){
             "start-game"->startGame()
+
+            "player-joined"->players++
         }
     }
 
@@ -65,11 +41,13 @@ class LobbyActivity : AppCompatActivity() {
             readyButton.setBackgroundColor(Color.RED)
             readyButton.text = "Not Ready"
             ready = !ready
+            //socketService.sendMessage(Json.encodeToString(Message("unready", lobbyCode)))
         }
         else{
             readyButton.setBackgroundColor(Color.GREEN)
             readyButton.text = "Ready"
             ready = !ready
+            //socketService.sendMessage(Json.encodeToString(Message("ready", lobbyCode)))
         }
     }
 
