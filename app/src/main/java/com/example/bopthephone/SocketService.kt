@@ -16,11 +16,13 @@ import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import java.util.*
 
 class SocketService : Service() {
 
-    private val binders: MutableSet<SocketCallback<String>> = mutableSetOf()
+    private val binders: MutableSet<SocketCallback<Message>> = mutableSetOf()
     private val messageChannel = Channel<String>(UNLIMITED)
     private val mainThreadHandler: Handler = Handler.createAsync(Looper.getMainLooper())
     private val job = SupervisorJob()
@@ -36,11 +38,11 @@ class SocketService : Service() {
 
     private val binder = SocketBinder()
 
-    fun registerCallback(callback: SocketCallback<String>) {
+    fun registerCallback(callback: SocketCallback<Message>) {
         binders.add(callback)
     }
 
-    fun deregisterCallback(callback: SocketCallback<String>) {
+    fun deregisterCallback(callback: SocketCallback<Message>) {
         binders.remove(callback)
     }
 
@@ -51,7 +53,7 @@ class SocketService : Service() {
     }
 
     private fun notify(
-        response: CallbackResponse<String>,
+        response: CallbackResponse<Message>,
     ) {
         binders.forEach { it.onComplete(response) }
 
@@ -70,7 +72,7 @@ class SocketService : Service() {
         socketScope.launch {
             client.webSocket(
                 method = HttpMethod.Get,
-                host = "192.168.178.31",
+                host = "",
                 port = 8080,
                 path = "/chat"
             ) {
@@ -106,7 +108,7 @@ class SocketService : Service() {
                 message as? Frame.Text ?: continue
                 val content = message.readText()
                 println(content)
-                notify(CallbackResponse(content))
+                notify(CallbackResponse(Json.decodeFromString(content)))
             }
         } catch (e: Exception) {
             println("Error while receiving: " + e.localizedMessage)
