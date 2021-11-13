@@ -8,21 +8,22 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.IBinder
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import kotlin.random.Random
-import android.os.CountDownTimer as CountDownTimer1
-
-class GameActivity : AppCompatActivity(), SensorEventListener {
 
 
-
-
+class MultiplayerActivity : AppCompatActivity() , SensorEventListener{
+    private var lastPerson: Boolean = false
+    private lateinit var lobbyCode: String
     private lateinit var accelerometer: Sensor
     private lateinit var gyroscope: Sensor
     private lateinit var sensorManager: SensorManager
@@ -83,12 +84,15 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
         super.onStart()
         Intent(this, SocketService::class.java).also { intent ->
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
+
         }
     }
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_game)
+        setContentView(R.layout.activity_multiplayer)
 
         this.sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.let { this.accelerometer = it }
@@ -102,27 +106,26 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
         pullItButton = findViewById<Button>(R.id.PullItButton)
         countDownBar = findViewById<ProgressBar>(R.id.CountDownBar)
 
-
-
-        currentTask = chooseNextTask(Random.nextInt(until = 3))
         scoreText.text = "score = $score"
+        lobbyCode = intent.getStringExtra("LobbyCode")!!
     }
 
-    fun startGameClick(view: View) {
+    fun onMessage(response: CallbackResponse<Message<String>>){
+        when(response.data.type){
+            "last-person"-> lastPerson = true
 
-        startGameButton.visibility = View.INVISIBLE
-        tapItButton.visibility = View.VISIBLE
-        twistItButton.visibility = View.VISIBLE
-        pullItButton.visibility = View.VISIBLE
-        countDownBar.visibility = View.VISIBLE
-        countdownBarValue = countdown
-        score = 0
-
-        gameRound(countdown)
+            "to-lobby"->{
+                val toLobbyActivity: Intent = Intent(this, LobbyActivity()::class.java)
+                val b: Bundle = Bundle()
+                b.putString("LobbyCode", lobbyCode)
+                    toLobbyActivity.putExtras(b)
+                    startActivity(toLobbyActivity)
+            }
+        }
     }
 
     private fun gameRound(countdown: Long) {
-        object : CountDownTimer1(countdown.toLong(), interval.toLong()) {
+        object : CountDownTimer(countdown.toLong(), interval.toLong()) {
 
             override fun onTick(l: Long) {
                 countdownBarValue -= interval
@@ -132,11 +135,15 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
                 if (cont) {
                     cont = false
                     score++
-                    currentTask = chooseNextTask(Random.nextInt(until = 3))
                     countdownBarValue = countdown - countdown / 100
                     countDownBar.max = countdownBarValue.toInt()
                     gameRound(countdown - countdown / 100)
                     cancel()
+                }
+                if (lastPerson){
+                    taskText.text = "You win!!!"
+                    cancel()
+
                 }
             }
 
@@ -147,29 +154,10 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
                 twistItButton.visibility = View.INVISIBLE
                 pullItButton.visibility = View.INVISIBLE
                 countDownBar.visibility = View.INVISIBLE
-                startGameButton.text = "Play Again?"
+                socketService.sendMessage(Json.encodeToString(Message("game-over", lobbyCode)))
             }
         }.start()
     }
-
-    fun twistItClick(view: View) {
-        if (currentTask === twist) {
-            cont = true
-        }
-    }
-
-    fun pullItClick(view: View) {
-        if (currentTask === pull) {
-            cont = true
-        }
-    }
-
-    fun tapItClick(view: View) {
-        if (currentTask === tap) {
-            cont = true
-        }
-    }
-
 
     override fun onSensorChanged(event: SensorEvent){
         when (event.sensor?.type){
@@ -196,13 +184,21 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
     }
 
-    fun chooseNextTask(task: Int): String {
-        return when(task){
-            0 -> tap
-            1 -> twist
-            2 -> pull
-            else -> tap
+    fun twistItClick(view: View) {
+        if (currentTask === twist) {
+            cont = true
         }
     }
 
+    fun pullItClick(view: View) {
+        if (currentTask === pull) {
+            cont = true
+        }
+    }
+
+    fun tapItClick(view: View) {
+        if (currentTask === tap) {
+            cont = true
+        }
+    }
 }

@@ -49,6 +49,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
+    }
+
     fun singleplayerClick(view: View) {
         val showGameView: Intent = Intent(this, GameActivity::class.java)
         startActivity(showGameView)
@@ -64,11 +69,11 @@ class MainActivity : AppCompatActivity() {
     fun scoreboardClick(view: View) {
         val showScoreboardView: Intent = Intent(this, ScoreboardActivity::class.java)
         startActivity(showScoreboardView)
+
+        socketService.sendMessage("Request Scores")
     }
 
     fun testClick(view: View) {
-
-            socketService.sendMessage("abc")
 
     }
 
