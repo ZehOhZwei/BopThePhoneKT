@@ -20,12 +20,20 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.util.*
 
+/**
+ * Service der die Kommunikation zwischen Client und Server verwaltet und Nachrichten senden
+ * und empfangen kann.
+ */
 class SocketService : Service() {
 
     private val binders: MutableSet<SocketCallback> = mutableSetOf()
     private val messageChannel = Channel<String>(UNLIMITED)
     private val mainThreadHandler: Handler = Handler.createAsync(Looper.getMainLooper())
     private val job = SupervisorJob()
+
+    /**
+     * Coroutine Scope für das asynschrone Verwalten von Nachrichten.
+     */
     private val socketScope = CoroutineScope(Dispatchers.IO)
 
     private var connected: Boolean = false
@@ -38,23 +46,37 @@ class SocketService : Service() {
 
     private val binder = SocketBinder()
 
+
+    /**
+     * Fügt einen Observer hinzu, der bei einer eingehenden Nachricht,
+     * benachrichtigt werden soll.
+     */
     fun registerCallback(callback: SocketCallback) {
         binders.add(callback)
     }
 
+
+    /**
+     * Entfernt einen Beobachter.
+     */
     fun deregisterCallback(callback: SocketCallback) {
         binders.remove(callback)
     }
 
+    /**
+     * Schreibt eine Nachricht in den [messageChannel]. Die Nachricht wird in der nächsten
+     * Iteration von [outputMessages] an den Server gesendet.
+     */
     fun sendMessage(message: String) {
-        socketScope.launch(){
+        socketScope.launch {
         messageChannel.send(message)
         }
     }
 
-    private fun notify(
-        response: CallbackResponse,
-    ) {
+    /**
+     * Benachrichtigt alle registrierten Beobachter über die empfangene Nachricht.
+     */
+    private fun notify(response: CallbackResponse) {
         binders.forEach { it.onComplete(response) }
 
     }
@@ -78,18 +100,19 @@ class SocketService : Service() {
             ) {
                 session = this
 
-                var output = launch(Dispatchers.IO) { outputMessages() }
-                var input = launch(Dispatchers.IO) { inputMessages() }
+                var output = launch { outputMessages() }
+                var input = launch { inputMessages() }
 
                 output.join()
                 input.cancelAndJoin()
-                sendMessage("a")
-                sendMessage("b")
             }
         }
         return START_STICKY
     }
 
+    /**
+     * Coroutine Handler für ausgehende Nachrichtnen.
+     */
     private suspend fun DefaultClientWebSocketSession.inputMessages() {
         for (message in messageChannel) {
             println("sending: $message")
@@ -102,6 +125,9 @@ class SocketService : Service() {
         }
     }
 
+    /**
+     * Coroutine Handler für eingehende Nachrichten.
+     */
     private suspend fun DefaultClientWebSocketSession.outputMessages() {
         try {
             for (message in incoming) {

@@ -1,14 +1,9 @@
 package com.example.bopthephone
 
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.IBinder
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,15 +12,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     fun singleplayerClick(view: View) {

@@ -1,15 +1,12 @@
 package com.example.bopthephone
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.os.IBinder
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
@@ -19,8 +16,6 @@ import kotlin.random.Random
 import android.os.CountDownTimer as CountDownTimer1
 
 class GameActivity : AppCompatActivity(), SensorEventListener {
-
-
 
 
     private lateinit var accelerometer: Sensor
@@ -43,21 +38,11 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     private val pull = "Pull It!"
 
     private lateinit var currentTask: String
-    private var cont : Boolean = false
-    private var score : Int = 0
-    private var countdown : Long = 3000
+    private var cont: Boolean = false
+    private var score: Int = 0
+    private var countdown: Long = 3000
     private var countdownBarValue: Long = 0
-    private val interval : Int = 100
-
-
-    override fun onResume() {
-        super.onResume()
-
-    }
-
-    override fun onPause() {
-        super.onPause()
-    }
+    private val interval: Int = 100
 
 
     override fun onStart() {
@@ -72,9 +57,17 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
 
         this.sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
-            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI)}
-            sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)?.also { gyroscope ->
-                sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI)}
+            sensorManager.registerListener(this,
+                accelerometer,
+                SensorManager.SENSOR_DELAY_NORMAL,
+                SensorManager.SENSOR_DELAY_UI)
+        }
+        sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)?.also { gyroscope ->
+            sensorManager.registerListener(this,
+                gyroscope,
+                SensorManager.SENSOR_DELAY_NORMAL,
+                SensorManager.SENSOR_DELAY_UI)
+        }
 
         scoreText = findViewById<TextView>(R.id.ScoreText)
         taskText = findViewById<TextView>(R.id.TaskText)
@@ -94,10 +87,8 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
 
         startGameButton.visibility = View.INVISIBLE
         tapItButton.visibility = View.VISIBLE
-        if(false){
-            twistItButton.visibility = View.VISIBLE
-            pullItButton.visibility = View.VISIBLE
-        }
+//      twistItButton.visibility = View.VISIBLE
+//      pullItButton.visibility = View.VISIBLE
         countDownBar.visibility = View.VISIBLE
         countdownBarValue = countdown
         score = 0
@@ -106,7 +97,7 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun gameRound(countdown: Long) {
-        object : CountDownTimer1(countdown.toLong(), interval.toLong()) {
+        object : CountDownTimer1(countdown, interval.toLong()) {
 
             override fun onTick(l: Long) {
                 countdownBarValue -= interval
@@ -137,43 +128,29 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     }
 
     fun twistItClick(view: View) {
-        if (currentTask === twist) {
-            cont = true
-        }
+        if (currentTask == twist) cont = true
     }
 
     fun pullItClick(view: View) {
-        if (currentTask === pull) {
-            cont = true
-        }
+        if (currentTask == pull) cont = true
     }
 
     fun tapItClick(view: View) {
-        if (currentTask === tap) {
-            cont = true
-        }
+        if (currentTask == tap) cont = true
     }
 
 
-    override fun onSensorChanged(event: SensorEvent){
-        when (event.sensor?.type){
-            Sensor.TYPE_ACCELEROMETER ->{
-
-                if (event.values[1] - 9.81f >= accelThreshold) {
-                    if (currentTask === pull) {
-                        cont = true
-                    }
-                }
+    override fun onSensorChanged(event: SensorEvent) {
+        when (event.sensor?.type) {
+            Sensor.TYPE_ACCELEROMETER -> {
+                if (currentTask != pull) return
+                if (event.values[1] - 9.81f < accelThreshold) return
+                cont = true
             }
-        }
-
-        when (event.sensor?.type){
-            Sensor.TYPE_GYROSCOPE ->{
-                if (event.values[1] >= gyroThreshold) {
-                    if (currentTask === twist) {
-                        cont = true
-                    }
-                }
+            Sensor.TYPE_GYROSCOPE -> {
+                if (currentTask != twist) return
+                if (event.values[1] < gyroThreshold) return
+                cont = true
             }
         }
     }
@@ -182,7 +159,7 @@ class GameActivity : AppCompatActivity(), SensorEventListener {
     }
 
     fun chooseNextTask(task: Int): String {
-        return when(task){
+        return when (task) {
             0 -> tap
             1 -> twist
             2 -> pull
